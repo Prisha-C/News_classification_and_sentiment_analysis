@@ -1,11 +1,12 @@
 "use client"
 
 
-import { convertTo12HourFormat, getNews } from "@/lib/utils";
+import { convertTo12HourFormat, generateSlug, getNews } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { useEffect, useState } from "react";
 import { NewsArticle } from "@/types/blog";
 import { LoadingSpinner } from "./ui/spinner";
+import Link from "next/link";
 
 export function BlogPosts() {
     const [news, setNews] = useState<NewsArticle[] | null>(null);
@@ -27,6 +28,18 @@ export function BlogPosts() {
     return (
         <div className="px-5 grid-cols-1 grid gap-6 lg:grid-cols-3 md:grid-cols-2">
             {news.map((item) => (
+                <Link
+                href={{
+                    pathname: `/blogs/${item.content ? generateSlug(item.content) : "default-slug"}`,
+                    query: {
+                        title: item.title,
+                        description: item.description,
+                        urlToImage: item.urlToImage,
+                        publishedAt: item.publishedAt,
+                    },
+                }}
+                key={item.title}
+            >
                 <Card key={item.title}>
                     <div className="flex flex-col justify-between h-full ">
                         <CardHeader className="p-0 rounded">
@@ -50,6 +63,7 @@ export function BlogPosts() {
                         </CardContent>
                     </div>
                 </Card>
+                </Link>
             ))}
         </div>
     );

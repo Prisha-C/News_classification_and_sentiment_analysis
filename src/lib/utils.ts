@@ -1,3 +1,4 @@
+import { NewsArticle } from "@/types/blog";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -8,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function convertTo12HourFormat(time:string) {
  
-  console.log("time",time.slice(11,time.length-1))
+  // console.log("time",time.slice(11,time.length-1))
   let [hours, minutes] = time.slice(11,time.length-1).split(':').map(Number);
   
   let period = hours >= 12 ? 'PM' : 'AM';
@@ -23,7 +24,7 @@ export function convertTo12HourFormat(time:string) {
 export async function getNews() {
   try {
       const response = await fetch(
-          "API_KEY"
+          "https://newsapi.org/v2/top-headlines?country=us&apiKey=0d70fc02ef244c6e99dc344964fcc814"
       );
       if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -34,4 +35,15 @@ export async function getNews() {
   } catch (error) {
       console.error("Error fetching news:", error);
   }
+}
+
+export function generateSlug(article: string) {
+  const slugifiedTitle = article
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")   // Replace non-alphanumerics with hyphen
+    .replace(/^-+|-+$/g, "");      // Remove leading/trailing hyphens
+
+   // or hash of URL/title
+
+  return `${slugifiedTitle}`;
 }
